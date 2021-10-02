@@ -1,9 +1,7 @@
 package gt.edu.umg.desaweb.service;
 
+import java.util.List;
 import java.util.Optional;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +9,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import gt.edu.umg.desaweb.jwt.JwtProvider;
 import gt.edu.umg.desaweb.model.TcUser;
@@ -40,13 +38,16 @@ public class TcUserService {
 	@Autowired
 	ErrorManagerService errorManagerService;
 	
+	@Autowired
+	PasswordEncoder passwordEncoder;
+	
 	public ApiResponse login(User user) {
 		ApiResponse apiResponse;
 		try {
-			byte[] tmpBPass = Base64.decodeBase64(user.getUsername());
-			String tmpPass = new String(tmpBPass);
+			//byte[] tmpBPass = Base64.decodeBase64(user.getUsername());
+			//String tmpPass = new String(tmpBPass);
 			Authentication authentication = authenticationManager
-					.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), tmpPass));
+					.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			Optional<TcUser> found = tcUserRepository.findByUsername(user.getUsername());
 			TcUser tcUser = found.get();
@@ -60,6 +61,29 @@ public class TcUserService {
 			apiResponse = new ApiResponse(ResponseResult.fail.getValue(), errorManagerService.exceptionManager(e), null);
 		}
 		return apiResponse;
+	}
+	
+	public ApiResponse setUser(TcUser user) {
+		ApiResponse apiResponse;
+		try {
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
+			user = tcUserRepository.save(user);
+			apiResponse = new ApiResponse(ResponseResult.success.getValue(), "Usuario creado", user);
+		} catch (Exception e) {
+			apiResponse = new ApiResponse(ResponseResult.fail.getValue(), errorManagerService.exceptionManager(e), null);
+		}
+		return apiResponse;		
+	}
+	
+	public ApiResponse getAll() {
+		ApiResponse res;
+		try {
+			List<TcUser> data = tcUserRepository.findAll();
+			res = new ApiResponse(ResponseResult.success.getValue(), ResponseResult.success.getMessage(), data);
+		} catch (Exception e) {
+			res = new ApiResponse(ResponseResult.fail.getValue(), errorManagerService.exceptionManager(e), null);
+		}
+		return res;
 	}
 
 }
