@@ -15,6 +15,10 @@ import gt.edu.umg.desaweb.model.TcUser;
 
 public class UserPrinciple  implements UserDetails  {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long userId;
     private String fullname;
     private String username;

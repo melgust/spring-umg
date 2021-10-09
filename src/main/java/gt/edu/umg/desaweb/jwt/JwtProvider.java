@@ -74,11 +74,4 @@ public class JwtProvider {
 		return calendar.getTime();
 	}
 
-	private static Date getDateExpirationGuest() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(new Date());
-		calendar.add(Calendar.MINUTE, 30);
-		return calendar.getTime();
-	}
-
 }

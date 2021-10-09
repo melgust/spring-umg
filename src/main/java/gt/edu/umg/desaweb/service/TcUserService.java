@@ -3,7 +3,6 @@ package gt.edu.umg.desaweb.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

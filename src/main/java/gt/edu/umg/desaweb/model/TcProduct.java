@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 
 @Entity
@@ -29,6 +30,7 @@ public class TcProduct {
 
 	@ManyToOne
 	@JoinColumn(name = "supplier_id")
+	@JsonIgnore
 	private TcSupplier tcSupplier;
 
 	public long getProductId() {
